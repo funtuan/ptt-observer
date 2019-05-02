@@ -1,0 +1,13 @@
+version: '3'
+services:
+  app:
+    container_name: ptt-observer
+    restart: always
+    build: .
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
