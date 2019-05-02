@@ -10,6 +10,7 @@ const ArticleSchema = new Schema({
   title: {type: String},
   content: {type: String},
   createAt: {type: Date},
+  updateAt: {type: Date},
 });
 
 const CommentSchema = new Schema({

@@ -14,8 +14,7 @@ function init() {
  * @param  {object} comment 留言物件
  * @return {object}         結果
  */
-function saveComment(
-    {kanban, articleID, floor, userID, score, content, createAt}) {
+function saveComment({kanban, articleID, floor, userID, score, content, createAt}) {
   createAt = new Date(createAt);
   const comment = new Comment({
     kanban,
@@ -43,8 +42,7 @@ function saveComment(
  * @return {object}         結果
  */
 function saveArticle(
-    {kanban, kid, ID, articleID, authorID, authorNickName,
-      title, content, createAt}) {
+    {kanban, kid, ID, articleID, authorID, authorNickName, title, content, createAt}) {
   const article = new Article({
     kanban,
     kid,
@@ -54,6 +52,7 @@ function saveArticle(
     title,
     content,
     createAt,
+    updateAt: new Date(),
   });
   return new Promise(function(resolve, reject) {
     article.save((err, res) => {

@@ -16,6 +16,31 @@ class PttCrawler {
   }
 
   /**
+   * 取得看板最後一篇文章 vid
+   * @param  {string} name  看板名稱
+   * @return {number}       vid
+   */
+  getKanbanLastVid(name) {
+    const option = {
+      url: `${this.baseURL}${name}/index.html`,
+      headers: {
+        'Cookie': 'over18=1',
+      },
+    };
+    return new Promise((resolve, reject) => {
+      request(option, (error, response, body) => {
+        if (error)reject(error);
+        const $ = cheerio.load(body);
+        const page = $('#action-bar-container .action-bar .btn-group-paging')['0']
+            .children[3].attribs.href.replace(`/bbs/Gossiping/index`, '').replace(`.html`, '');
+        this.getOneList(name, parseInt(page)+1).then((value) => {
+          resolve(page*20 + value.length);
+        });
+      });
+    });
+  }
+
+  /**
    * 取得看板文章清單
    * @param  {string} name  看板名稱
    * @param  {number} start 開始文章kid
@@ -63,15 +88,18 @@ class PttCrawler {
       },
     };
     return new Promise((resolve, reject) => {
-      request(option, function(error, response, body) {
+      request(option, (error, response, body) => {
         if (error)reject(error);
-        const $ = cheerio.load(body);
+        const $ = cheerio.load(body
+            .replace(`<div class="r-list-sep"></div>`, '<div class="r-ent">stopGetOneList</div>'));
         const list = [];
 
+        let topArticle = false;
         // 取得文章清單
         $('.r-ent').each(function(i, elem) {
+          if ($(this).html() === 'stopGetOneList')topArticle = true;
           const children$ = cheerio.load($(this).html());
-          if (children$('.title a').attr('href')) {
+          if (children$('.title a').attr('href') && !topArticle) {
             list.push({
               kanban: name,
               kid: (page-1)*20 + i,
@@ -146,8 +174,10 @@ class PttCrawler {
 
 module.exports = PttCrawler;
 
-// const crawler = new PttCrawler();
-
+const crawler = new PttCrawler();
+crawler.getKanbanLastVid('Gossiping').then((value) => {
+  console.log(value);
+});
 // crawler.getOneList('Gossiping', 39262).then((value) => {
 //   console.log(value);
 // });
