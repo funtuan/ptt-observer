@@ -6,7 +6,7 @@ const cheerio = require('cheerio');
 /**
  * ptt 主爬蟲
  */
-class Crawler {
+class PttCrawler {
   /**
    * 爬蟲初始化
    * @param {string} baseURL 爬蟲目標網址
@@ -24,8 +24,10 @@ class Crawler {
    */
   getKanbanList(name, start, end) {
     return new Promise((resolve, reject) => {
-      const task = [];
       let now = start;
+
+      // 建立爬蟲任務清單
+      const task = [];
       while (now < end) {
         const page = Math.floor(now/20) + 1;
         task.push(this.getOneList(name, page));
@@ -36,6 +38,7 @@ class Crawler {
       Promise.all(task).then((items) => {
         items.forEach((item) => {
           item.forEach((article) => {
+            // 過濾 kid 範圍
             if (article.kid >= start && article.kid <= end) {
               list.push(article);
             }
@@ -62,8 +65,10 @@ class Crawler {
     return new Promise((resolve, reject) => {
       request(option, function(error, response, body) {
         if (error)reject(error);
-        const list = [];
         const $ = cheerio.load(body);
+        const list = [];
+
+        // 取得文章清單
         $('.r-ent').each(function(i, elem) {
           const children$ = cheerio.load($(this).html());
           if (children$('.title a').attr('href')) {
@@ -78,6 +83,7 @@ class Crawler {
             });
           }
         });
+
         resolve(list);
       });
     });
@@ -101,6 +107,8 @@ class Crawler {
       request(option, function(error, response, body) {
         if (error)reject(error);
         const $ = cheerio.load(body);
+
+        // 基本文章資訊
         const article = {
           authorID: $('.article-metaline .article-meta-value')['0']
               .children[0].data.split(' (')[0],
@@ -114,6 +122,8 @@ class Crawler {
               .parent.next.data,
           comment: [],
         };
+
+        // 取得留言內容
         $('.push').each(function(i, elem) {
           const children$ = cheerio.load($(this).html());
           if (children$('.push-tag').text()) {
@@ -127,6 +137,7 @@ class Crawler {
             });
           }
         });
+
         resolve(article);
       });
     });
@@ -134,5 +145,18 @@ class Crawler {
 }
 
 module.exports = {
-  Crawler,
+  PttCrawler,
 };
+
+const crawler = new PttCrawler();
+
+// crawler.getOneList('Gossiping', 39262).then((value) => {
+//   console.log(value);
+// });
+//
+// crawler.getKanbanList('Gossiping', 785255, 785355).then((value) => {
+//   console.log(value);
+// });
+crawler.getArticle('Gossiping', 'M.1556768660.A.DCC').then((value) => {
+  console.log(value);
+});
