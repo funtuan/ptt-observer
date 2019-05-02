@@ -2,11 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ArticleSchema = new Schema({
+  kanban: {type: String},
+  kid: {type: Number},
+  ID: {type: String},
   authorID: {type: String},
   authorNickName: {type: String},
   title: {type: String},
-  createAt: {type: Date},
   content: {type: String},
+  createAt: {type: Date},
 });
 
 const CommentSchema = new Schema({
@@ -16,6 +19,7 @@ const CommentSchema = new Schema({
   userID: {type: String},
   score: {type: Number},
   content: {type: String},
+  createAt: {type: String},
 });
 
 const Article = mongoose.model('Article', ArticleSchema);

@@ -116,8 +116,8 @@ class PttCrawler {
               .children[0].data.split(' (')[1].replace(`)`, ''),
           title: $('.article-metaline .article-meta-value')['1']
               .children[0].data,
-          createAt: $('.article-metaline .article-meta-value')['2']
-              .children[0].data,
+          createAt: new Date($('.article-metaline .article-meta-value')['2']
+              .children[0].data),
           content: $('.article-metaline .article-meta-value')['2']
               .parent.next.data,
           comment: [],
@@ -129,10 +129,10 @@ class PttCrawler {
           if (children$('.push-tag').text()) {
             const tag = children$('.push-tag').text();
             article.comment.push({
-              id: i+1,
+              floor: i+1,
               score: tag === '推 '?1:(tag === '噓 '?-1:0),
               userID: children$('.push-userid').text(),
-              content: children$('.push-content').text(),
+              content: children$('.push-content').text().replace(`: `, ''),
               createAt: children$('.push-ipdatetime').text().replace(`\n`, ''),
             });
           }
@@ -144,11 +144,9 @@ class PttCrawler {
   }
 }
 
-module.exports = {
-  PttCrawler,
-};
+module.exports = PttCrawler;
 
-const crawler = new PttCrawler();
+// const crawler = new PttCrawler();
 
 // crawler.getOneList('Gossiping', 39262).then((value) => {
 //   console.log(value);
@@ -157,6 +155,6 @@ const crawler = new PttCrawler();
 // crawler.getKanbanList('Gossiping', 785255, 785355).then((value) => {
 //   console.log(value);
 // });
-crawler.getArticle('Gossiping', 'M.1556768660.A.DCC').then((value) => {
-  console.log(value);
-});
+// crawler.getArticle('Gossiping', 'M.1556768660.A.DCC').then((value) => {
+//   console.log(value);
+// });
