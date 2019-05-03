@@ -80,15 +80,18 @@ function saveArticle({kanban, kid, id}) {
       };
       mongooseORM.getArticleFloor({kanban, kid, id}).then((floor) => {
         mongooseORM.saveArticle(value);
+        const task = [];
         value.comment.forEach((item)=>{
           item.kanban = kanban;
           item.articleID = id;
           if (item.floor > floor.total) {
-            mongooseORM.saveComment(item);
+            task.push(mongooseORM.saveComment(item));
           }
         });
+        Promise.all(task).then(() => {
+          resolve();
+        });
       });
-      resolve();
     }).catch((err) => {
       resolve();
     });
