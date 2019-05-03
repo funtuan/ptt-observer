@@ -18,6 +18,7 @@ const ArticleSchema = new Schema({
     id: {type: String},
     extent: {type: Number},
   }],
+  mark: {type: Boolean},
   createAt: {type: Date},
   updateAt: {type: Date},
 });

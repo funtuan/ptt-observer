@@ -8,6 +8,8 @@ services:
       - .:/usr/src/app
     links:
       - mongo
+    ports:
+      - 8940:4000
   mongo:
     container_name: ptt-observer-mongo
     image: mongo
@@ -15,6 +17,9 @@ services:
       - ./data:/data/db
   mongo-express:
     image: mongo-express
+    environment:
+         - ME_CONFIG_BASICAUTH_USERNAME=hank
+         - ME_CONFIG_BASICAUTH_PASSWORD=@hank
     links:
       - mongo
     ports:

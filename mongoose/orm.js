@@ -119,9 +119,34 @@ function getArticleFloor({kanban, kid, id}) {
   });
 }
 
+/**
+ * 取得熱門文章
+ * @param  {string} kanban 看板名稱
+ * @param  {number} limit  取得數量
+ * @return {[type]}        [description]
+ */
+function getHotArticle(kanban, limit=1) {
+  return new Promise((resolve, reject) => {
+    Article.aggregate([
+      {$match: {kanban, mark: null}},
+      {$project: {hot: {$sum: ['$floor.good', '$floor.bad']}}},
+      {$sort: {hot: -1}},
+      {$limit: limit},
+    ]).exec((err, result) => {
+      Article.findOne({_id: result[0]._id}, function(err, doc) {
+        console.log(doc);
+        resolve(doc);
+      });
+    });
+  });
+}
+
+// getHotArticle('Gossiping');
+
 module.exports = {
   init,
   saveComment,
   saveArticle,
   getArticleFloor,
+  getHotArticle,
 };
