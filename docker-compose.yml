@@ -2,7 +2,7 @@ version: '3'
 services:
   app:
     container_name: ptt-observer
-    restart: always
+    # restart: always
     build: .
     volumes:
       - .:/usr/src/app
@@ -18,4 +18,4 @@ services:
     links:
       - mongo
     ports:
-      - "127.0.0.1:8081:8081"
+      - 8989:8081

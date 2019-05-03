@@ -15,7 +15,6 @@ function init() {
  * @return {object}         結果
  */
 function saveComment({kanban, articleID, floor, userID, score, content, createAt}) {
-  createAt = new Date(createAt);
   const comment = new Comment({
     kanban,
     articleID,
@@ -33,6 +32,20 @@ function saveComment({kanban, articleID, floor, userID, score, content, createAt
         resolve(res);
       }
     });
+    // Comment.findOne({kanban, articleID, floor}, 'userID', function(err, doc) {
+    //   if (err) reject(err);
+    //   if (!doc) {
+    //     comment.save((err, res) => {
+    //       if (err) {
+    //         reject(err);
+    //       } else {
+    //         resolve(res);
+    //       }
+    //     });
+    //   } else {
+    //     resolve();
+    //   }
+    // });
   });
 }
 
@@ -42,24 +55,65 @@ function saveComment({kanban, articleID, floor, userID, score, content, createAt
  * @return {object}         結果
  */
 function saveArticle(
-    {kanban, kid, ID, articleID, authorID, authorNickName, title, content, createAt}) {
+    {kanban, kid, id, articleID, authorID, authorNickName, title, content, floor, createAt}) {
+  createAt = new Date(createAt);
   const article = new Article({
     kanban,
     kid,
-    ID,
+    id,
     authorID,
     authorNickName,
     title,
     content,
+    floor,
+    tag: [],
     createAt,
     updateAt: new Date(),
   });
   return new Promise(function(resolve, reject) {
-    article.save((err, res) => {
-      if (err) {
-        reject(err);
+    Article.findOne({kanban, kid, id}, function(err, doc) {
+      if (err) reject(err);
+      if (!doc) {
+        article.save((err, res) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res);
+          }
+        });
       } else {
-        resolve(res);
+        doc.content = content;
+        doc.floor = floor;
+        doc.updateAt = new Date();
+        doc.save((err, res) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(res);
+          }
+        });
+      }
+    });
+  });
+}
+
+/**
+ * 取得文章留言樓層狀態
+ * @param  {object} article 文章條件
+ * @return {object}         結果
+ */
+function getArticleFloor({kanban, kid, id}) {
+  return new Promise((resolve, reject) => {
+    Article.findOne({kanban, kid, id}, 'floor', function(err, doc) {
+      if (err) reject(err);
+      if (doc) {
+        resolve(doc.floor);
+      } else {
+        resolve({
+          total: 0,
+          good: 0,
+          bad: 0,
+        });
       }
     });
   });
@@ -69,4 +123,5 @@ module.exports = {
   init,
   saveComment,
   saveArticle,
+  getArticleFloor,
 };

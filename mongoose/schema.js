@@ -4,11 +4,20 @@ const Schema = mongoose.Schema;
 const ArticleSchema = new Schema({
   kanban: {type: String},
   kid: {type: Number},
-  ID: {type: String},
+  id: {type: String},
   authorID: {type: String},
   authorNickName: {type: String},
   title: {type: String},
   content: {type: String},
+  floor: {
+    total: {type: Number},
+    good: {type: Number},
+    bad: {type: Number},
+  },
+  tag: [{
+    id: {type: String},
+    extent: {type: Number},
+  }],
   createAt: {type: Date},
   updateAt: {type: Date},
 });
