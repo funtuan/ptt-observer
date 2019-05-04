@@ -32,20 +32,6 @@ function saveComment({kanban, articleID, floor, userID, score, content, createAt
         resolve(res);
       }
     });
-    // Comment.findOne({kanban, articleID, floor}, 'userID', function(err, doc) {
-    //   if (err) reject(err);
-    //   if (!doc) {
-    //     comment.save((err, res) => {
-    //       if (err) {
-    //         reject(err);
-    //       } else {
-    //         resolve(res);
-    //       }
-    //     });
-    //   } else {
-    //     resolve();
-    //   }
-    // });
   });
 }
 
@@ -129,14 +115,25 @@ function getHotArticle(kanban, limit=1) {
   return new Promise((resolve, reject) => {
     Article.aggregate([
       {$match: {kanban, mark: null}},
-      {$project: {hot: {$sum: ['$floor.good', '$floor.bad']}}},
+      {
+        $project: {
+          hot: {$sum: ['$floor.good', '$floor.bad']},
+          kanban: 1,
+          kid: 1,
+          id: 1,
+          authorID: 1,
+          authorNickName: 1,
+          title: 1,
+          content: 1,
+          floor: 1,
+          tag: 1,
+          mark: 1,
+        }
+      },
       {$sort: {hot: -1}},
       {$limit: limit},
     ]).exec((err, result) => {
-      Article.findOne({_id: result[0]._id}, function(err, doc) {
-        console.log(doc);
-        resolve(doc);
-      });
+      resolve(result);
     });
   });
 }

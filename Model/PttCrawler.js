@@ -29,7 +29,10 @@ class PttCrawler {
     };
     return new Promise((resolve, reject) => {
       request(option, (error, response, body) => {
-        if (error)reject(error);
+        if (error || !body) {
+          reject(error);
+          return;
+        }
         const $ = cheerio.load(body);
         const page = $('#action-bar-container .action-bar .btn-group-paging')['0']
             .children[3].attribs.href.replace(`/bbs/Gossiping/index`, '').replace(`.html`, '');
@@ -89,37 +92,38 @@ class PttCrawler {
     };
     return new Promise((resolve, reject) => {
       request(option, (error, response, body) => {
-        if (error) {
+        if (error || !body) {
           resolve([]);
-        } else {
-          try {
-            const $ = cheerio.load(body
-                .replace(`<div class="r-list-sep"></div>`, '<div class="r-ent">stopGetOneList</div>'));
-            const list = [];
+          return;
+        }
+        try {
+          const $ = cheerio.load(body
+              .replace(`<div class="r-list-sep"></div>`, '<div class="r-ent">stopGetOneList</div>'));
+          const list = [];
 
-            let topArticle = false;
-            // 取得文章清單
-            $('.r-ent').each(function(i, elem) {
-              if ($(this).html() === 'stopGetOneList')topArticle = true;
-              const children$ = cheerio.load($(this).html());
-              if (children$('.title a').attr('href') && !topArticle) {
-                list.push({
-                  kanban,
-                  kid: (page-1)*20 + i,
-                  id: children$('.title a').attr('href')
-                      .replace(`/bbs/${kanban}/`, '').replace(`.html`, ''),
-                  title: children$('.title a').text(),
-                  nrec: children$('.nrec').text()
-                        ?children$('.nrec').text():'',
-                });
-              }
-            });
+          let topArticle = false;
+          // 取得文章清單
+          $('.r-ent').each(function(i, elem) {
+            if ($(this).html() === 'stopGetOneList')topArticle = true;
+            if (!$(this).html()) return;
+            const children$ = cheerio.load($(this).html());
+            if (children$('.title a').attr('href') && !topArticle) {
+              list.push({
+                kanban,
+                kid: (page-1)*20 + i,
+                id: children$('.title a').attr('href')
+                    .replace(`/bbs/${kanban}/`, '').replace(`.html`, ''),
+                title: children$('.title a').text(),
+                nrec: children$('.nrec').text()
+                      ?children$('.nrec').text():'',
+              });
+            }
+          });
 
-            resolve(list);
-          } catch (e) {
-            console.log(e);
-            resolve([]);
-          }
+          resolve(list);
+        } catch (e) {
+          console.log(e);
+          resolve([]);
         }
       });
     });
@@ -141,7 +145,10 @@ class PttCrawler {
     };
     return new Promise((resolve, reject) => {
       request(option, function(error, response, body) {
-        if (error)reject(error);
+        if (error || !body) {
+          reject(error);
+          return;
+        }
         const $ = cheerio.load(body);
         console.log(id);
 
@@ -164,6 +171,10 @@ class PttCrawler {
 
           // 取得留言內容
           $('.push').each(function(i, elem) {
+            if (!$(this).html()) {
+              reject(error);
+              return;
+            }
             const children$ = cheerio.load($(this).html());
             if (children$('.push-tag').text()) {
               const tag = children$('.push-tag').text();

@@ -5,6 +5,32 @@ const pttCrawler = new PttCrawler();
 mongooseORM.init();
 
 /**
+ * 重複運行最新文章備份
+ * @param  {string} kanban 看板名稱
+ * @param  {number} amount   數量
+ * @param  {number} interval 備份間隔頻率
+ */
+function run(kanban, amount, interval) {
+  let runing = false;
+  setInterval(()=>{
+    if (!runing) {
+      runing = true;
+      try {
+        const startTime = new Date();
+        newArticle(kanban, amount, interval).then(() => {
+          console.log('總共花費時間', (new Date() - startTime)/1000, '秒');
+          runing = false;
+        }).catch((err) => {
+          runing = false;
+        });
+      } catch (e) {
+        runing = false;
+      }
+    }
+  }, 5000);
+}
+
+/**
  * 備份看板內最新幾篇文章
  * @param  {string} kanban   看板名稱
  * @param  {number} amount   數量
@@ -102,4 +128,5 @@ function saveArticle({kanban, kid, id}) {
 
 module.exports = {
   newArticle,
+  run,
 };

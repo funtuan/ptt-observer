@@ -37,6 +37,6 @@ module.exports = gql`
 
   type Query {
     "取得需要mark的看板文章"
-    needMarkArticle(kanban: String!): Article,
+    needMarkArticle(kanban: String!, limit: Int): [Article],
   }
 `;

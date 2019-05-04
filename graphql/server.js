@@ -6,8 +6,8 @@ const mongooseORM = require('../mongoose/orm.js');
 const resolvers = {
   Query: {
     needMarkArticle: (root, args, context) => {
-      const {kanban} = args;
-      return mongooseORM.getHotArticle(kanban);
+      const {kanban, limit} = args;
+      return mongooseORM.getHotArticle(kanban, limit);
     },
   },
 };
