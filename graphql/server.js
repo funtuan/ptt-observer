@@ -10,6 +10,12 @@ const resolvers = {
       return mongooseORM.getHotArticle(kanban, limit);
     },
   },
+  Mutation: {
+    markArticle: (root, args, context) => {
+      const {kanban, id, tag} = args;
+      return mongooseORM.markArticle(kanban, id, tag);
+    },
+  },
 };
 
 const server = new ApolloServer({

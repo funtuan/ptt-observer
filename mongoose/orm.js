@@ -128,12 +128,40 @@ function getHotArticle(kanban, limit=1) {
           floor: 1,
           tag: 1,
           mark: 1,
-        }
+        },
       },
       {$sort: {hot: -1}},
       {$limit: limit},
     ]).exec((err, result) => {
+      console.log(result);
       resolve(result);
+    });
+  });
+}
+
+/**
+ * 文章標記
+ * @param  {string} kanban 看板名稱
+ * @param  {string} id     文章id
+ * @param  {object} tag    傾向標記
+ * @return {object}        文章
+ */
+function markArticle(kanban, id, tag) {
+  return new Promise(function(resolve, reject) {
+    Article.findOne({kanban, id}, function(err, doc) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (doc) {
+        doc.tag = tag;
+        doc.mark = true;
+        doc.updateAt = new Date();
+        doc.save();
+        resolve(doc);
+      } else {
+        reject(new Error('找不到此文章'));
+      }
     });
   });
 }
@@ -146,4 +174,5 @@ module.exports = {
   saveArticle,
   getArticleFloor,
   getHotArticle,
+  markArticle,
 };

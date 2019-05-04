@@ -199,7 +199,7 @@ class PttCrawler {
 
 module.exports = PttCrawler;
 
-const crawler = new PttCrawler();
+// const crawler = new PttCrawler();
 // crawler.getKanbanLastVid('Gossiping').then((value) => {
 //   console.log(value);
 // });

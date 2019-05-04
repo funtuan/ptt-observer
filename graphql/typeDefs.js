@@ -35,8 +35,21 @@ module.exports = gql`
     extent: Int,
   }
 
+  """
+  標籤
+  """
+  input TagInput {
+    id: String,
+    extent: Int,
+  }
+
   type Query {
     "取得需要mark的看板文章"
     needMarkArticle(kanban: String!, limit: Int): [Article],
+  }
+
+  type Mutation {
+    "新增貼文"
+    markArticle(kanban: String!, id: String!, tag: [TagInput]!): Article,
   }
 `;
