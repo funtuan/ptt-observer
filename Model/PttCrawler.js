@@ -92,29 +92,34 @@ class PttCrawler {
         if (error) {
           resolve([]);
         } else {
-          const $ = cheerio.load(body
-              .replace(`<div class="r-list-sep"></div>`, '<div class="r-ent">stopGetOneList</div>'));
-          const list = [];
+          try {
+            const $ = cheerio.load(body
+                .replace(`<div class="r-list-sep"></div>`, '<div class="r-ent">stopGetOneList</div>'));
+            const list = [];
 
-          let topArticle = false;
-          // 取得文章清單
-          $('.r-ent').each(function(i, elem) {
-            if ($(this).html() === 'stopGetOneList')topArticle = true;
-            const children$ = cheerio.load($(this).html());
-            if (children$('.title a').attr('href') && !topArticle) {
-              list.push({
-                kanban,
-                kid: (page-1)*20 + i,
-                id: children$('.title a').attr('href')
-                    .replace(`/bbs/${kanban}/`, '').replace(`.html`, ''),
-                title: children$('.title a').text(),
-                nrec: children$('.nrec').text()
-                      ?children$('.nrec').text():'',
-              });
-            }
-          });
+            let topArticle = false;
+            // 取得文章清單
+            $('.r-ent').each(function(i, elem) {
+              if ($(this).html() === 'stopGetOneList')topArticle = true;
+              const children$ = cheerio.load($(this).html());
+              if (children$('.title a').attr('href') && !topArticle) {
+                list.push({
+                  kanban,
+                  kid: (page-1)*20 + i,
+                  id: children$('.title a').attr('href')
+                      .replace(`/bbs/${kanban}/`, '').replace(`.html`, ''),
+                  title: children$('.title a').text(),
+                  nrec: children$('.nrec').text()
+                        ?children$('.nrec').text():'',
+                });
+              }
+            });
 
-          resolve(list);
+            resolve(list);
+          } catch (e) {
+            console.log(e);
+            resolve([]);
+          }
         }
       });
     });

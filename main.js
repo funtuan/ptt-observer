@@ -1,13 +1,13 @@
 const graphqlServer = require('./graphql/server.js');
 const pttBackup = require('./service/pttBackup.js');
 
-// console.log('run');
-// const startTime = new Date();
-// pttBackup.newArticle('Gossiping', 200000-25000, 50, 760000).then(() => {
-//   console.log('總共花費時間', (new Date() - startTime)/1000, '秒');
-// }).catch((err) => {
-//   console.log('error!');
-// });
+console.log('run');
+const startTime = new Date();
+pttBackup.newArticle('Gossiping', 200000-95000, 50, 689350).then(() => {
+  console.log('總共花費時間', (new Date() - startTime)/1000, '秒');
+}).catch((err) => {
+  console.log('error!');
+});
 
 /**
  * 運行 Backup

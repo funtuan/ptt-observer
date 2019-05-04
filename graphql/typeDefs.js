@@ -36,9 +36,6 @@ module.exports = gql`
   }
 
   type Query {
-    "A simple type for getting started!"
-    hello: String,
-
     "取得需要mark的看板文章"
     needMarkArticle(kanban: String!): Article,
   }

@@ -3,14 +3,10 @@ const typeDefs = require('./typeDefs.js');
 
 const mongooseORM = require('../mongoose/orm.js');
 
-mongooseORM.getHotArticle('Gossiping');
 const resolvers = {
   Query: {
-    hello: () => 'world',
-    // needMarkArticle: () => {},
     needMarkArticle: (root, args, context) => {
       const {kanban} = args;
-      console.log(kanban);
       return mongooseORM.getHotArticle(kanban);
     },
   },
