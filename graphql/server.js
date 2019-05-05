@@ -9,6 +9,9 @@ const resolvers = {
       const {kanban, limit} = args;
       return mongooseORM.getHotArticle(kanban, limit);
     },
+    tagList: (root, args, context) => {
+      return mongooseORM.getTagList();
+    },
   },
   Mutation: {
     markArticle: (root, args, context) => {

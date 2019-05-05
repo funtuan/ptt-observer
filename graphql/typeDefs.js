@@ -36,6 +36,15 @@ module.exports = gql`
   }
 
   """
+  標籤內容
+  """
+  type TagName {
+    id: String,
+    name: String,
+  }
+
+
+  """
   標籤
   """
   input TagInput {
@@ -46,6 +55,10 @@ module.exports = gql`
   type Query {
     "取得需要mark的看板文章"
     needMarkArticle(kanban: String!, limit: Int): [Article],
+
+
+    "取得標記清單"
+    tagList: [TagName],
   }
 
   type Mutation {

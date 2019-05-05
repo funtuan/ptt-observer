@@ -33,10 +33,17 @@ const CommentSchema = new Schema({
   createAt: {type: String},
 });
 
+const TagListSchema = new Schema({
+  id: {type: String},
+  name: {type: String},
+});
+
 const Article = mongoose.model('Article', ArticleSchema);
 const Comment = mongoose.model('Comment', CommentSchema);
+const TagList = mongoose.model('Taglists', TagListSchema);
 
 module.exports = {
   Article,
   Comment,
+  TagList,
 };

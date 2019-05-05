@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const DB_URL = 'mongodb://mongo';
-const {Article, Comment} = require('./schema.js');
+const {Article, Comment, TagList} = require('./schema.js');
 
 /**
  * 初始化
@@ -166,6 +166,22 @@ function markArticle(kanban, id, tag) {
   });
 }
 
+/**
+ * 取得標籤清單
+ * @return {object}        標籤清單
+ */
+function getTagList() {
+  return new Promise(function(resolve, reject) {
+    TagList.find({}, function(err, doc) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(doc);
+    });
+  });
+}
+
 // getHotArticle('Gossiping');
 
 module.exports = {
@@ -175,4 +191,5 @@ module.exports = {
   getArticleFloor,
   getHotArticle,
   markArticle,
+  getTagList,
 };
