@@ -182,6 +182,29 @@ function getTagList() {
   });
 }
 
+/**
+ * 檢查重複文章且刪除
+ * @param  {string} kanban  看板名稱
+ * @param  {String} id      文章id
+ * @return {Boolean}        刪除是否成功
+ */
+function checkRepeatDelete(kanban, id) {
+  return new Promise(function(resolve, reject) {
+    Article.find({kanban, id}, function(err, doc) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (doc.length > 1) {
+        Article.find({_id: doc[1]._id}).remove().exec();
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    });
+  });
+}
+
 // getHotArticle('Gossiping');
 
 module.exports = {
@@ -192,4 +215,5 @@ module.exports = {
   getHotArticle,
   markArticle,
   getTagList,
+  checkRepeatDelete,
 };

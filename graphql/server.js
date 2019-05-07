@@ -18,6 +18,10 @@ const resolvers = {
       const {kanban, id, tag} = args;
       return mongooseORM.markArticle(kanban, id, tag);
     },
+    checkRepeatDelete: (root, args, context) => {
+      const {kanban, id} = args;
+      return mongooseORM.checkRepeatDelete(kanban, id);
+    },
   },
 };
 

@@ -13,4 +13,4 @@ const pttBackup = require('./service/pttBackup.js');
 // runBackup('Gossiping');
 
 graphqlServer.init();
-pttBackup.run('Gossiping', 10000, 10);
+pttBackup.run('Gossiping', 10000, 2);

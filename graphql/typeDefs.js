@@ -64,5 +64,8 @@ module.exports = gql`
   type Mutation {
     "新增貼文"
     markArticle(kanban: String!, id: String!, tag: [TagInput]!): Article,
+
+    "檢查刪除重複貼文"
+    checkRepeatDelete(kanban: String!, id: String!): Boolean,
   }
 `;
